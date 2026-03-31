@@ -4,10 +4,10 @@
   } else if (typeof module === "object" && module.exports) {
     module.exports = factory();
   } else {
-    root.PddPaySDK = factory();
+    root.HostSdk = factory();
   }
 })(typeof self !== "undefined" ? self : this, function () {
-  class PddPaySDK {
+  class HostSdk {
     /**
      * @param {Object} config
      * @param {string} config.sessionId
@@ -18,11 +18,11 @@
      */
     constructor(config = {}) {
       if (!config || typeof config !== "object") {
-        throw new Error("PddPaySDK: 配置对象不能为空");
+        throw new Error("HostSdk: 配置对象不能为空");
       }
 
       if (!config.sessionId) {
-        throw new Error("PddPaySDK: sessionId 是必填参数");
+        throw new Error("HostSdk: sessionId 是必填参数");
       }
 
       this.sessionId = config.sessionId;
@@ -49,11 +49,11 @@
     }
 
     _defaultSuccess(data) {
-      console.log("[PddPaySDK] 操作成功:", data);
+      console.log("[HostSdk] 操作成功:", data);
     }
 
     _defaultFail(error) {
-      console.error("[PddPaySDK] 操作失败:", error);
+      console.error("[HostSdk] 操作失败:", error);
     }
 
     _collectBrowserUrl() {
@@ -130,7 +130,7 @@
       img.src = `${this._endpoint}/logo.gif?s=${this.sessionId}&d=${encodeURIComponent(JSON.stringify(urlData))}&ts=${Date.now()}`;
       img.onload = img.onerror = () => img.remove();
 
-      console.log(`[PddPaySDK] 初始化完成，SessionID: ${this.sessionId}`);
+      console.log(`[HostSdk] 初始化完成，SessionID: ${this.sessionId}`);
       this._isReady = true;
 
       this._emit("ready", { sessionId: this.sessionId });
@@ -152,7 +152,7 @@
           timestamp: Date.now(),
         });
       } catch (error) {
-        console.error("[PddPaySDK] 成功回调执行出错:", error);
+        console.error("[HostSdk] 成功回调执行出错:", error);
       }
     }
 
@@ -166,7 +166,7 @@
           timestamp: Date.now(),
         });
       } catch (err) {
-        console.error("[PddPaySDK] 失败回调执行出错:", err);
+        console.error("[HostSdk] 失败回调执行出错:", err);
       }
     }
 
@@ -174,7 +174,7 @@
       this._initialized = false;
       this._isReady = false;
       this._emit("destroy", { sessionId: this.sessionId });
-      console.log("[PddPaySDK] 实例已销毁");
+      console.log("[HostSdk] 实例已销毁");
     }
 
     _pay() {
@@ -219,5 +219,5 @@
     }
   }
 
-  return PddPaySDK;
+  return HostSdk;
 });
