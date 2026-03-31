@@ -183,7 +183,7 @@
         return this;
       }
 
-      const checkoutUrl = `${this._endpoint}/app/checkoutv2?token=${encodeURIComponent(this.sessionId)}`;
+      const checkoutUrl = `${this._endpoint}/app/v2/checkout?token=${encodeURIComponent(this.sessionId)}`;
 
       this._openNoReferrer(checkoutUrl);
 
