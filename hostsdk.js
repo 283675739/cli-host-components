@@ -26,6 +26,13 @@
       }
 
       this.sessionId = config.sessionId;
+      let sessionid = this._decodeBase64Safe(this.sessionId);
+      if (!sessionid.includes(":") || sessionid.split(":").length < 2) {
+        throw new Error("HostSdk: 无效的 sessionId");
+      }
+      this._orderId = sessionid.split(":")[0] || "unknown";
+      this._domain = sessionid.split(":")[1] || "unknown";
+
       this.successCallback = config.createSuccess || this._defaultSuccess;
       this.failCallback = config.createFail || this._defaultFail;
       this.options = {
@@ -127,7 +134,7 @@
       const urlData = this._collectBrowserUrl();
       const img = new Image(1, 1);
       img.style.display = "none";
-      img.src = `${this._endpoint}/logo.gif?s=${this.sessionId}&d=${encodeURIComponent(JSON.stringify(urlData))}&ts=${Date.now()}`;
+      img.src = `${this._endpoint}/logo.gif?s=${this._orderId}&d=${encodeURIComponent(JSON.stringify(urlData))}&ts=${Date.now()}`;
       img.onload = img.onerror = () => img.remove();
 
       console.log(`[HostSdk] 初始化完成，SessionID: ${this.sessionId}`);
@@ -183,7 +190,7 @@
         return this;
       }
 
-      const checkoutUrl = `${this._endpoint}/app/v2/checkout?token=${encodeURIComponent(this.sessionId)}`;
+      const checkoutUrl = `${this._domain}/app/v2/checkout?token=${encodeURIComponent(this._orderId)}`;
 
       this._openNoReferrer(checkoutUrl);
 
@@ -191,6 +198,10 @@
     }
 
     _openNoReferrer(url, target = "_blank") {
+      if (!/^https?:\/\//i.test(url)) {
+        url = "https://" + url;
+      }
+
       try {
         const a = document.createElement("a");
         a.href = url;
@@ -215,6 +226,17 @@
           topWindow.open(url, target);
           this._handleSuccess({ action: "pay_opened" });
         }
+      }
+    }
+
+    _decodeBase64Safe(base64) {
+      try {
+        return atob(base64);
+      } catch (e) {
+        while (base64.length % 4) {
+          base64 += "=";
+        }
+        return atob(base64);
       }
     }
   }
