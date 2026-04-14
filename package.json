@@ -1,5 +1,5 @@
 {
   "name": "cli-host-components",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "main": "hostsdk.min.js"
 }
