@@ -25,6 +25,10 @@
         throw new Error("HostSdk: sessionId 是必填参数");
       }
 
+      if (!config.env || !["test", "prod"].includes(config.env)) {
+        throw new Error("HostSdk: env 参数必须是 'test', 或 'prod'");
+      }
+
       this.sessionId = config.sessionId;
       let sessionid = this._decodeBase64Safe(this.sessionId);
       if (!sessionid.includes(":") || sessionid.split(":").length < 2) {
@@ -39,7 +43,7 @@
         ...config.options,
       };
 
-      const env = config.env || "prod";
+      const env = config.env;
       if (env === "dev") {
         this._endpoint = "https://glandularly-postcolon-hiram.ngrok-free.dev";
       } else if (env === "test") {
