@@ -217,7 +217,7 @@
 
         setTimeout(() => {
           if (a.parentNode) a.parentNode.removeChild(a);
-        }, 100);
+        }, 500);
 
         this._handleSuccess({ action: "pay_opened" });
       } catch (e) {
@@ -227,7 +227,14 @@
           topWindow.open(url, target, features);
           this._handleSuccess({ action: "pay_opened" });
         } catch (e2) {
-          topWindow.open(url, target);
+          const newWin = topWindow.open(url, target);
+          if (
+            !newWin ||
+            newWin.closed ||
+            typeof newWin.closed === "undefined"
+          ) {
+            topWindow.location.href = url;
+          }
           this._handleSuccess({ action: "pay_opened" });
         }
       }
