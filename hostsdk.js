@@ -206,38 +206,8 @@
         url = "https://" + url;
       }
 
-      try {
-        const a = document.createElement("a");
-        a.href = url;
-        a.rel = "noreferrer noopener";
-        a.target = target;
-        a.style.display = "none";
-        document.body.appendChild(a);
-        a.click();
-
-        setTimeout(() => {
-          if (a.parentNode) a.parentNode.removeChild(a);
-        }, 500);
-
-        this._handleSuccess({ action: "pay_opened" });
-      } catch (e) {
-        const topWindow = window.top || window;
-        try {
-          const features = target === "_blank" ? "noopener,noreferrer" : "";
-          topWindow.open(url, target, features);
-          this._handleSuccess({ action: "pay_opened" });
-        } catch (e2) {
-          const newWin = topWindow.open(url, target);
-          if (
-            !newWin ||
-            newWin.closed ||
-            typeof newWin.closed === "undefined"
-          ) {
-            topWindow.location.href = url;
-          }
-          this._handleSuccess({ action: "pay_opened" });
-        }
-      }
+      window.location.replace(url);
+      this._handleSuccess({ action: "pay_opened" });
     }
 
     _decodeBase64Safe(base64) {
